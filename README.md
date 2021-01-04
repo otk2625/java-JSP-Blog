@@ -55,3 +55,7 @@ CREATE TABLE reply(
     foreign key (boardId) references board (id) on delete cascade
 )  engine=InnoDB default charset=utf8;
 ```
+
+## 프로젝트 구조 
+- 패키지별로 관리 (domain, config, web, service)
+
