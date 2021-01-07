@@ -1,5 +1,70 @@
 package com.cos.blog.domain.board;
 
-public class BoardDao {
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
+import com.cos.blog.config.DB;
+import com.cos.blog.domain.board.dto.SaveReqDto;
+
+public class BoardDao {
+	
+	public int save(SaveReqDto dto) { // 회원가입
+		String sql = "INSERT INTO board(userId, title, content, createDate) VALUES(?,?,?, now())";
+		Connection conn = DB.getConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, dto.getUserId());
+			pstmt.setString(2, dto.getTitle());
+			pstmt.setString(3, dto.getContent());
+			int result = pstmt.executeUpdate();
+			
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally { // 무조건 실행
+			DB.close(conn, pstmt);
+		}
+		return -1;
+	}
+
+	public List<Board> findAll(){
+		// SELECT 해서 Board 객체를 컬렉션에 담아서 리턴
+		List<Board> boardList = new ArrayList<>();
+		
+		String sql = "SELECT id, userId, title, content, readCount, createDate FROM board ";
+		Connection conn = DB.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs =  pstmt.executeQuery();
+			
+			while(rs.next()) {
+	            Board board = new Board().builder()
+	            		.id(rs.getInt("id"))
+	            		.userId(rs.getInt("userid"))
+	            		.title(rs.getString("title"))
+	            		.content(rs.getString("content"))
+	            		.readCount(rs.getInt("readCount"))
+	            		.createDate(rs.getTimestamp("createDate"))
+	            		.build();
+	            
+	            
+	              
+	            boardList.add(board);
+	        }
+			
+			return boardList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
 }
