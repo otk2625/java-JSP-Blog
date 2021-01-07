@@ -31,17 +31,18 @@ public class BoardDao {
 		return -1;
 	}
 
-	public List<Board> findAll(){
+	public List<Board> findAll(int page){
 		// SELECT 해서 Board 객체를 컬렉션에 담아서 리턴
 		List<Board> boardList = new ArrayList<>();
 		
-		String sql = "SELECT id, userId, title, content, readCount, createDate FROM board ";
+		String sql = "SELECT id, userId, title, content, readCount, createDate FROM board order by id desc limit ?,4";
 		Connection conn = DB.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, page*4);
 			rs =  pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -54,8 +55,6 @@ public class BoardDao {
 	            		.createDate(rs.getTimestamp("createDate"))
 	            		.build();
 	            
-	            
-	              
 	            boardList.add(board);
 	        }
 			
@@ -66,5 +65,27 @@ public class BoardDao {
 		
 		
 		return null;
+	}
+
+	public int countAll() {
+		String sql = "SELECT * from board ";
+		Connection conn = DB.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs =  pstmt.executeQuery();
+
+			rs.last();
+			int a = rs.getRow();
+		
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally { // 무조건 실행
+			DB.close(conn, pstmt);
+		}
+		return -1;
 	}
 }

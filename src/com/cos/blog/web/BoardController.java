@@ -38,7 +38,7 @@ public class BoardController extends HttpServlet {
 
 	protected void doProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getParameter("cmd");
-
+		System.out.println(cmd);
 		BoardService boardService = new BoardService();
 		// http://localhost:8080/blog/user?cmd=saveForm
 		HttpSession session = request.getSession(); 
@@ -70,20 +70,30 @@ public class BoardController extends HttpServlet {
 				Script.back(response, "글쓰기실패");
 			}
 		} else if(cmd.equals("list")) {
-			List<Board> boards = boardService.목록보기();
+			int page = Integer.parseInt(request.getParameter("page"));  // 최초 : 0, Next : 1, Next: 2
+			List<Board> boards = boardService.목록보기(page);
+			double 올림개수 = boardService.목록개수()/4;
+			int 개수 = (int) Math.ceil(올림개수);
+			System.out.println(boards.size());
+			
+			if(page == 개수) {
+				request.setAttribute("nextEnd", true);	
+			}
+
+			if(page == 0) {
+				request.setAttribute("preEnd", true);
+			}
+			
 			
 			request.setAttribute("boards", boards);
 			// request에 담고
 			// RequestDispathcer 만들어서 이동
-			
-			System.out.println(boards.get(1));
-			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("board/list.jsp");
 			dispatcher.forward(request, response);
-
-		
 			
-
+	
+		}else if(cmd.equals("datail")) {
+			System.out.println("이리로 오는가?");
 
 		}
 	}

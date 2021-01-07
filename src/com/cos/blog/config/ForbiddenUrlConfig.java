@@ -38,11 +38,6 @@ public class ForbiddenUrlConfig implements Filter {
 	        }
 		}
 			
-    	
-    	
-
-    	
-		
 	}
 
 }

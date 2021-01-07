@@ -41,42 +41,8 @@
 		</div>
 	</c:forEach>
 
-	<br />
-	<ul class="pagination justify-content-center">
 
-		<c:choose>
-
-			<c:when test="${preEnd eq true}">
-				<li class="page-item"><a class="page-link"
-					href="javascript:void(0)">Previous</a></li>
-			</c:when>
-
-			<c:otherwise>
-				<li class="page-item"><a class="page-link"
-					href="/blog/board?cmd=list&page=${param.page-1}">Previous</a></li>
-			</c:otherwise>
-		</c:choose>
-
-		<c:choose>
-			<c:when test="${nextEnd eq true}">
-
-				<li class="page-item"><a class="page-link"
-					href="javascript:void(0)">Next</a></li>
-			</c:when>
-
-			<c:otherwise>
-
-				<li class="page-item"><a class="page-link"
-					href="/blog/board?cmd=list&page=${param.page+1}">Next</a></li>
-			</c:otherwise>
-		</c:choose>
-
-		<%-- <li class="page-item"><a class="page-link"
-			href="/blog/board?cmd=list&page=${param.page-1}">Previous</a></li>
-		<li class="page-item"><a class="page-link"
-			href="/blog/board?cmd=list&page=${param.page+1}">Next</a></li>
-		
-	</ul> --%>
+	
 </div>
 
 <script>

@@ -2,6 +2,6 @@
     pageEncoding="UTF-8"%>
 <%
 	
-RequestDispatcher dispatcher = request.getRequestDispatcher("board?cmd=list");
+RequestDispatcher dispatcher = request.getRequestDispatcher("board?cmd=list&page=0"); 
 dispatcher.forward(request, response);
 %>
