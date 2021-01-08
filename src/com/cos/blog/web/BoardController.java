@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cos.blog.domain.board.Board;
+import com.cos.blog.domain.board.dto.CommonRespDto;
 import com.cos.blog.domain.board.dto.DeleteReqDto;
 import com.cos.blog.domain.board.dto.DetailRespDto;
 import com.cos.blog.domain.board.dto.SaveReqDto;
+import com.cos.blog.domain.board.dto.UpdateReqDto;
 import com.cos.blog.domain.user.User;
 import com.cos.blog.service.BoardService;
 import com.cos.blog.service.UserService;
@@ -111,30 +113,65 @@ public class BoardController extends HttpServlet {
 			
 		}else if(cmd.equals("delete")) {
 			//요청받은 json데이터를 자바 오브젝트로 파싱
-			BufferedReader br = request.getReader();
-			String data = br.readLine();
+//			BufferedReader br = request.getReader(); //body데이터를 읽는다
+//			String data = br.readLine();
+//			
+//			//gson으로 json파싱
+//			Gson gson = new Gson();
+//			DeleteReqDto dto = gson.fromJson(data, DeleteReqDto.class);
 			
-			//gson으로 json파싱
-			Gson gson = new Gson();
-			DeleteReqDto dto = gson.fromJson(data, DeleteReqDto.class);
-			String status;
-			System.out.println(dto.getId());
-			System.out.println("data : " + data);
+			int id = Integer.parseInt(request.getParameter("id")); //이렇게 한번에 받아오기 가능
+			
+//			String status;
+
 			
 			//DB에서 id값으로 글 삭제
-			int result = boardService.글삭제(dto.getId());
+//			int result = boardService.글삭제(dto.getId());
+			int result = boardService.글삭제(id);
 			
-			//응답할 json데이터 생성
-			if(result == 1) {
-				status = "ok";
-			}else {
-				status = "fail";
-			}
-			String respData = gson.toJson(status); //json데이터로 변환
-			System.out.println(respData);
+//			//응답할 json데이터 생성
+//			if(result == 1) {
+//				status = "ok";
+//			}else {
+//				status = "fail";
+//			}
+//			String respData = gson.toJson(status); //json데이터로 변환
+			
+			CommonRespDto<String> commonRespDto = new CommonRespDto<>();
+			commonRespDto.setStatusCode(result);
+			commonRespDto.setData("성공");
+
+			Gson gson = new Gson();
+			String respData = gson.toJson(commonRespDto);
 			PrintWriter out = response.getWriter();
 			out.print(respData); //json이 아닌 String로 보내면 작동 하징 ㅏㄶ음
 			out.flush();
+		}else if (cmd.equals("updateForm")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			DetailRespDto dto = boardService.글상세보기(id);
+			request.setAttribute("detail", dto);
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("board/updateForm.jsp");
+			dispatcher.forward(request, response);
+		} else if(cmd.equals("update")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+
+			UpdateReqDto dto = new UpdateReqDto();
+			dto.setId(id);
+			dto.setTitle(title);
+			dto.setContent(content);
+			
+			int result = boardService.글수정하기(dto);
+			
+			if(result == 1) {
+				// 고민해보세요. 왜 RequestDispatcher 안썻는지... 한번 써보세요. detail.jsp 호출
+				
+				response.sendRedirect("/blog/board?cmd=detail&id="+id);
+			}else {
+				Script.back(response,"글 수정에 실패하였습니다.");
+			}
 		}
 		
 		

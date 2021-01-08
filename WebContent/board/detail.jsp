@@ -10,9 +10,13 @@
 	<!-- 인증 + 권한이 필요 sessionScope.principal.id비교 detail.userid -->
 	<div class="form-row float-right">
 	<c:if test = "${sessionScope.principal.id == detail.userid}">
+		<a href="/blog/board?cmd=updateForm&id=${detail.id }" class="btn btn-warning">수정</a>
+	</c:if>
+	<c:if test = "${sessionScope.principal.id == detail.userid}">
 		<button class="btn btn-danger" onclick="deleteByid(${detail.id})">삭제</button>
 	</c:if>
 	</div>
+	
 	
 	
 	<br /> <br />
@@ -75,7 +79,7 @@
 </div>
 
 <script>
-	function deleteByid(id){
+	/*function deleteByid(id){
 		//ajax로 delete요청(post) 요청과 응답을 모두 json으로 통일
 		var data ={
 			id:id	
@@ -95,7 +99,27 @@
 				}else
 					alert("오류");
 			});
+	}*/ //이걸로 굳이 안써도 됨!ajax는 delete로 요청할때
+		//data, contentType가 필요없다
+		//url에 delete&id=boardid로 보내면 됨굳이 json파싱 안해도됨
+
+		
+	function deleteByid(boardId){
+		$.ajax({
+			type: "post",
+			url: "/blog/board?cmd=delete&id="+boardId,
+			dataType: "json"
+		}).done(function(result){
+			console.log(result);
+			if(result.statusCode == 1){
+				alert("삭제 완료");
+				location.href="index.jsp";
+			}else{
+				alert("삭제에 실패하였습니다.");
+			}
+		});
 	}
+
 </script>
 </body>
 </html>
