@@ -9,4 +9,5 @@ public class DetailRespDto {
 	private String content;
 	private int readCount;
 	private String username;
+	private int userid;
 }

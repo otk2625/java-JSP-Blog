@@ -2,7 +2,9 @@ package com.cos.blog.web;
 
 import java.util.Iterator;
 import java.util.List;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,18 +15,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cos.blog.domain.board.Board;
+import com.cos.blog.domain.board.dto.DeleteReqDto;
 import com.cos.blog.domain.board.dto.DetailRespDto;
 import com.cos.blog.domain.board.dto.SaveReqDto;
 import com.cos.blog.domain.user.User;
 import com.cos.blog.service.BoardService;
 import com.cos.blog.service.UserService;
 import com.cos.blog.util.Script;
+import com.google.gson.Gson;
 
 //http://localhost:8080/blog/board
 @WebServlet("/board")
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	
+	
  public BoardController() {
      super();
  }
@@ -102,7 +108,36 @@ public class BoardController extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("board/detail.jsp");
 			dispatcher.forward(request, response);
 
+			
+		}else if(cmd.equals("delete")) {
+			//요청받은 json데이터를 자바 오브젝트로 파싱
+			BufferedReader br = request.getReader();
+			String data = br.readLine();
+			
+			//gson으로 json파싱
+			Gson gson = new Gson();
+			DeleteReqDto dto = gson.fromJson(data, DeleteReqDto.class);
+			String status;
+			System.out.println(dto.getId());
+			System.out.println("data : " + data);
+			
+			//DB에서 id값으로 글 삭제
+			int result = boardService.글삭제(dto.getId());
+			
+			//응답할 json데이터 생성
+			if(result == 1) {
+				status = "ok";
+			}else {
+				status = "fail";
+			}
+			String respData = gson.toJson(status); //json데이터로 변환
+			System.out.println(respData);
+			PrintWriter out = response.getWriter();
+			out.print(respData); //json이 아닌 String로 보내면 작동 하징 ㅏㄶ음
+			out.flush();
 		}
+		
+		
 	}
 
 }

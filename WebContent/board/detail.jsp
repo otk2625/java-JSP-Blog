@@ -4,6 +4,17 @@
 <%@ include file="../layout/header.jsp"%>
 
 <div class="container">
+
+	<!-- POST,GET, DELETE, PUT -->
+	<!-- 자바스크립트로 POST로 삭제 요청 -->
+	<!-- 인증 + 권한이 필요 sessionScope.principal.id비교 detail.userid -->
+	<div class="form-row float-right">
+	<c:if test = "${sessionScope.principal.id == detail.userid}">
+		<button class="btn btn-danger" onclick="deleteByid(${detail.id})">삭제</button>
+	</c:if>
+	</div>
+	
+	
 	<br /> <br />
 	<h6 class="m-2">
 		작성자 : <i>${detail.username}</i> 조회수 : <i>${detail.readCount}</i>
@@ -63,5 +74,28 @@
 	<!-- 댓글 박스 끝 -->
 </div>
 
+<script>
+	function deleteByid(id){
+		//ajax로 delete요청(post) 요청과 응답을 모두 json으로 통일
+		var data ={
+			id:id	
+		}
+		console.log(data);
+		console.log(JSON.stringify(data))
+			$.ajax({
+				type: "post", //delete면 바디에담을수 없음
+	            url: "/blog/board?cmd=delete",
+	            data: JSON.stringify(data),
+	            contentType:"application/json; charset=utf-8;",
+	            dataType: "json"
+			}).done(function(result){
+				if(result == "ok"){
+					alert("삭제 완료");
+					location.href="index.jsp"
+				}else
+					alert("오류");
+			});
+	}
+</script>
 </body>
 </html>

@@ -28,8 +28,16 @@ public class BoardService {
 		return boardDao.countAll();
 	}
 
+		//하나의 서비스안에 여러가지 DB관련 로직이 섞임
 	public DetailRespDto 글상세보기(int id) {
+		
+		
 		return boardDao.findById(id);
 		
+	}
+
+	public int 글삭제(int id) {
+		
+		return boardDao.deleteById(id);
 	}
 }
