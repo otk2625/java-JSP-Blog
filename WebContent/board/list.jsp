@@ -22,7 +22,7 @@
 	</div>
 
 	<div class="progress col-md-12 m-2">
-		<div class="progress-bar" style="width: 70%"></div>
+		<div class="progress-bar" style="width: ${currentpercent}%"></div>
 	</div>
 
 
@@ -30,7 +30,7 @@
 
 	<!-- JSTL foreach문을 써서 뿌리세요. el표현식과 함께 -->
 	<!-- requestScope가 생략됨  -->
-	<c:forEach items="${boards }" var="item" varStatus="status">
+	<c:forEach items="${boards}" var="item" varStatus="status">
 		<div class="card col-md-12 m-2">
 			<div class="card-body">
 				<h4 class="card-title">${item.title}</h4>
@@ -47,7 +47,7 @@
 		<c:choose>
 
 			<c:when test="${preEnd eq true}">
-				<li class="page-item"><a class="page-link"
+				<li class="page-item disabled"><a class="page-link"
 					href="javascript:void(0)">Previous</a></li>
 			</c:when>
 
@@ -60,7 +60,7 @@
 		<c:choose>
 			<c:when test="${nextEnd eq true}">
 
-				<li class="page-item"><a class="page-link"
+				<li class="page-item disabled"><a class="page-link"
 					href="javascript:void(0)">Next</a></li>
 			</c:when>
 

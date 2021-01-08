@@ -5,6 +5,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee                       http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 
+
+
 	<description>MySQL Test App</description>
 	<resource-ref>
 		<description>DB Connection</description>
@@ -13,7 +15,7 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 
- 	<filter>
+	<filter>
 		<filter-name>charConfig</filter-name>
 		<filter-class>com.cos.blog.config.CharConfig</filter-class>
 	</filter>
@@ -33,5 +35,7 @@
 		<filter-name>forbiddenUrlConfig</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
+
+	
 
 </web-app>

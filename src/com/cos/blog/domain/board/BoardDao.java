@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.cos.blog.config.DB;
+import com.cos.blog.domain.board.dto.DetailRespDto;
 import com.cos.blog.domain.board.dto.SaveReqDto;
 
 public class BoardDao {
@@ -79,6 +80,9 @@ public class BoardDao {
 
 			rs.last();
 			int a = rs.getRow();
+			
+			//if(rs.next){return rs.getInt(1); => 개수 뽑아내기}
+		
 		
 			return a;
 		} catch (Exception e) {
@@ -87,5 +91,51 @@ public class BoardDao {
 			DB.close(conn, pstmt);
 		}
 		return -1;
+	}
+
+	public DetailRespDto findById(int id) {
+		// SELECT 해서 Board 객체를 컬렉션에 담아서 리턴
+				StringBuffer sb = new StringBuffer();
+				
+				sb.append("select b.id, b.title, b.content, b.readCount, u.username ");
+				sb.append("from board b inner join user u ");
+				sb.append("on b.userid = u.id ");
+				sb.append("where b.id = ? ");
+				
+				String sql = sb.toString();
+				String readcountSql = "UPDATE board SET readCount=readCount+1  where id = ? ";
+
+				Connection conn = DB.getConnection();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				DetailRespDto dto;
+				try {
+					pstmt = conn.prepareStatement(readcountSql);
+					pstmt.setInt(1, id);
+					pstmt.executeUpdate();
+					
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, id);
+					
+					rs =  pstmt.executeQuery();
+					dto = new DetailRespDto();
+					if(rs.next()) {
+						
+						
+					dto.setId(rs.getInt("b.id"));
+					dto.setTitle(rs.getString("b.title"));
+					dto.setContent(rs.getString("b.content"));
+					dto.setReadCount(rs.getInt("b.readcount"));
+					dto.setUsername(rs.getString("u.username"));
+					}
+					
+					return dto;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				
+				return null;
+		
 	}
 }
