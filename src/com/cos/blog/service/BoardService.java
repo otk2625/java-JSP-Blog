@@ -46,4 +46,14 @@ public class BoardService {
 		
 		return boardDao.update(dto);
 	}
+
+	public List<Board> 검색목록보기(int page, String keyword) {
+		
+		return boardDao.searchFindAll(page, keyword);
+	}
+
+	public int 검색목록개수(String keyword) {
+		
+		return boardDao.searchCountAll(keyword);
+	}
 }

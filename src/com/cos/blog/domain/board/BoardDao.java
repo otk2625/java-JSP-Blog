@@ -179,5 +179,74 @@ public class BoardDao {
 		return -1;
 	}
 
+	public List<Board> searchFindAll(int page, String keyword) {
+		
+		// SELECT 해서 Board 객체를 컬렉션에 담아서 리턴
+				List<Board> boardList = new ArrayList<>();
+				
+				String sql = "SELECT id, userId, title, content, readCount, createDate "
+						+ "FROM board "
+						+ "where title = ? "
+						+ "order by id desc "
+						+ "limit ?,4 ";
+				Connection conn = DB.getConnection();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				
+				try {
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, keyword);
+					pstmt.setInt(2, page*4);
+					rs =  pstmt.executeQuery();
+					
+					while(rs.next()) {
+			            Board board = new Board().builder()
+			            		.id(rs.getInt("id"))
+			            		.userId(rs.getInt("userid"))
+			            		.title(rs.getString("title"))
+			            		.content(rs.getString("content"))
+			            		.readCount(rs.getInt("readCount"))
+			            		.createDate(rs.getTimestamp("createDate"))
+			            		.build();
+			            
+			            boardList.add(board);
+			        }
+					
+					return boardList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				
+				return null;
+	}
+
+	public int searchCountAll(String keyword) {
+	
+		String sql = "SELECT * from board where title = ? ";
+		Connection conn = DB.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, keyword);
+			rs =  pstmt.executeQuery();
+
+			rs.last();
+			int a = rs.getRow();
+			
+			//if(rs.next){return rs.getInt(1); => 개수 뽑아내기}
+		
+		
+			return a;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally { // 무조건 실행
+			DB.close(conn, pstmt);
+		}
+		return -1;
+	}
+
 	
 }

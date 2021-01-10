@@ -12,7 +12,7 @@
 
 	<div class="m-2">
 		<form class="form-inline d-flex justify-content-end"
-			action="/blog/board">
+			action="/blog/board?cmd=search">
 			<input type="hidden" name="cmd" value="search" /> <input
 				type="hidden" name="page" value="0" /> <input type="text"
 				name="keyword" class="form-control mr-sm-2" placeholder="Search">
@@ -52,8 +52,20 @@
 			</c:when>
 
 			<c:otherwise>
-				<li class="page-item"><a class="page-link"
-					href="/blog/board?cmd=list&page=${param.page-1}">Previous</a></li>
+
+				<c:choose>
+
+					<c:when test="${searchOn eq true}">
+						<li class="page-item"><a class="page-link"
+							href="/blog/board?cmd=search&page=${param.page-1}&keyword=${param.keyword}">Previous</a></li>
+					</c:when>
+
+					<c:otherwise>
+						<li class="page-item"><a class="page-link"
+							href="/blog/board?cmd=list&page=${param.page-1}">Previous</a></li>
+					</c:otherwise>
+				</c:choose>
+
 			</c:otherwise>
 		</c:choose>
 
@@ -66,8 +78,20 @@
 
 			<c:otherwise>
 
-				<li class="page-item"><a class="page-link"
-					href="/blog/board?cmd=list&page=${param.page+1}">Next</a></li>
+				<c:choose>
+					<c:when test="${searchOn eq true}">
+
+						<li class="page-item"><a class="page-link"
+					href="/blog/board?cmd=search&page=${param.page+1}&keyword=${param.keyword}">Next</a></li>
+					</c:when>
+
+					<c:otherwise>
+
+						<li class="page-item"><a class="page-link"
+							href="/blog/board?cmd=list&page=${param.page+1}">Next</a></li>
+					</c:otherwise>
+				</c:choose>
+
 			</c:otherwise>
 		</c:choose>
 
