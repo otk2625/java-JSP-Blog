@@ -94,6 +94,7 @@
 
 			</c:otherwise>
 		</c:choose>
+		</ul>
 
 		<%-- <li class="page-item"><a class="page-link"
 			href="/blog/board?cmd=list&page=${param.page-1}">Previous</a></li>

@@ -1,8 +1,8 @@
 package com.cos.blog.web;
 
-import java.util.Iterator;
+
 import java.util.List;
-import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -16,13 +16,16 @@ import javax.servlet.http.HttpSession;
 
 import com.cos.blog.domain.board.Board;
 import com.cos.blog.domain.board.dto.CommonRespDto;
-import com.cos.blog.domain.board.dto.DeleteReqDto;
+
 import com.cos.blog.domain.board.dto.DetailRespDto;
 import com.cos.blog.domain.board.dto.SaveReqDto;
 import com.cos.blog.domain.board.dto.UpdateReqDto;
+import com.cos.blog.domain.reply.Reply;
+import com.cos.blog.domain.reply.dto.ReplyDto;
 import com.cos.blog.domain.user.User;
 import com.cos.blog.service.BoardService;
-import com.cos.blog.service.UserService;
+import com.cos.blog.service.ReplyService;
+
 import com.cos.blog.util.Script;
 import com.google.gson.Gson;
 
@@ -50,6 +53,7 @@ public class BoardController extends HttpServlet {
 		String cmd = request.getParameter("cmd");
 		System.out.println(cmd);
 		BoardService boardService = new BoardService();
+		ReplyService replyService = new ReplyService();
 		// http://localhost:8080/blog/user?cmd=saveForm
 		HttpSession session = request.getSession();
 		if (cmd.equals("saveForm")) {
@@ -105,8 +109,13 @@ public class BoardController extends HttpServlet {
 
 		} else if (cmd.equals("detail")) {
 			int id = Integer.parseInt(request.getParameter("id"));
+			
 			DetailRespDto dto = boardService.글상세보기(id); // board테이블 + user테이블 = 조인된 데이터가 필요!
+			List<ReplyDto> replys = replyService.댓글목록(id);
+			
 			request.setAttribute("detail", dto);
+			request.setAttribute("replys", replys); //댓글 목록 보여주기
+			System.out.println("userid있나 : "+replys);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("board/detail.jsp");
 			dispatcher.forward(request, response);
 
